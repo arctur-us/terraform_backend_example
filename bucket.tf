@@ -1,23 +1,59 @@
-resource "aws_s3_bucket" "mybackend" {
+resource "aws_s3_bucket" "source" {
   provider = aws.primary_region
-  bucket   = var.bucket_name
+  bucket   = var.source_bucket
 }
 
-resource "aws_s3_bucket" "backend_copy" {
+resource "aws_s3_bucket" "destination" {
   provider = aws.secondary_region
-  bucket   = var.bucket_copy
+  bucket   = var.destination_bucket
+}
+
+resource "aws_s3_bucket_versioning" "destination" {
+  provider = aws.secondary_region
+  bucket   = aws_s3_bucket.destination.id
+  versioning_configuration {
+    status = "Enabled"
+  }
 }
 
 resource "aws_s3control_multi_region_access_point" "backup" {
   details {
-    name = "backup"
-
+    name = var.access_point
     region {
-      bucket = aws_s3_bucket.mybackend.id
+      bucket = aws_s3_bucket.source.id
     }
-
     region {
-      bucket = aws_s3_bucket.backend_copy.id
+      bucket = aws_s3_bucket.destination.id
+    }
+  }
+}
+
+resource "aws_s3_bucket_acl" "source_bucket_acl" {
+  provider = aws.primary_region
+  bucket   = aws_s3_bucket.source.id
+  acl      = "private"
+}
+
+resource "aws_s3_bucket_versioning" "source" {
+  provider = aws.primary_region
+  bucket   = aws_s3_bucket.source.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_replication_configuration" "replication" {
+  provider   = aws.primary_region
+  depends_on = [aws_s3_bucket_versioning.source]
+  role       = aws_iam_role.replication.arn
+  bucket     = aws_s3_bucket.source.id
+
+  rule {
+    id     = var.replication_rule
+    status = "Enabled"
+    destination {
+      bucket        = aws_s3_bucket.destination.arn
+      storage_class = "STANDARD"
     }
   }
 }
