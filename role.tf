@@ -19,7 +19,6 @@ POLICY
 
 resource "aws_iam_policy" "replication" {
   name = "yk-tf-iam-role-policy-replication-12345"
-
   policy = <<POLICY
 {
   "Version": "2012-10-17",
@@ -57,4 +56,9 @@ resource "aws_iam_policy" "replication" {
   ]
 }
 POLICY
+}
+
+resource "aws_iam_role_policy_attachment" "replication" {
+  role       = aws_iam_role.replication.name
+  policy_arn = aws_iam_policy.replication.arn
 }
