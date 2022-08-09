@@ -1,5 +1,5 @@
 resource "aws_iam_role" "replication" {
-  name = "yk-tf-iam-role-replication-12345"
+  name               = "yk-tf-iam-role-replication-12345"
   assume_role_policy = <<POLICY
 {
   "Version": "2012-10-17",
@@ -11,6 +11,48 @@ resource "aws_iam_role" "replication" {
       },
       "Effect": "Allow",
       "Sid": ""
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_iam_policy" "replication" {
+  name = "yk-tf-iam-role-policy-replication-12345"
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "s3:GetReplicationConfiguration",
+        "s3:ListBucket"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "${aws_s3_bucket.source.arn}"
+      ]
+    },
+    {
+      "Action": [
+        "s3:GetObjectVersionForReplication",
+        "s3:GetObjectVersionAcl",
+         "s3:GetObjectVersionTagging"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "${aws_s3_bucket.source.arn}/*"
+      ]
+    },
+    {
+      "Action": [
+        "s3:ReplicateObject",
+        "s3:ReplicateDelete",
+        "s3:ReplicateTags"
+      ],
+      "Effect": "Allow",
+      "Resource": "${aws_s3_bucket.destination.arn}/*"
     }
   ]
 }

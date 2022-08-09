@@ -1,7 +1,7 @@
-variable "bucket_name" {
+variable "source_bucket" {
   default = "yk-terraform-backend-example"
 }
 
-variable "bucket_copy" {
+variable "destination_bucket" {
   default = "yk-terraform-backend-copy"
 }
