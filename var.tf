@@ -21,3 +21,15 @@ variable "iam_role" {
 variable "iam_policy" {
   default = "yk-tf-iam-role-policy-replication-12345"
 }
+
+variable "dynamodb_table" {
+  default = "yk-tf-states"
+}
+
+variable "timeto_live" {
+  default = "yk-time-to-exist"
+}
+
+variable "dynamodb_tags" {
+  default = "yk-dynamodb-table"
+}
