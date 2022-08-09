@@ -1,5 +1,5 @@
 resource "aws_iam_role" "replication" {
-  name               = "yk-tf-iam-role-replication-12345"
+  name               = var.iam_role
   assume_role_policy = <<POLICY
 {
   "Version": "2012-10-17",
@@ -18,7 +18,7 @@ POLICY
 }
 
 resource "aws_iam_policy" "replication" {
-  name = "yk-tf-iam-role-policy-replication-12345"
+  name   = var.iam_policy
   policy = <<POLICY
 {
   "Version": "2012-10-17",
