@@ -16,11 +16,6 @@ resource "aws_dynamodb_table" "basic-dynamodb-table" {
     type = "S"
   }
 
-  # ttl {
-  #   attribute_name = var.timeto_live
-  #   enabled        = false
-  # }
-
   tags = {
     Name        = var.dynamodb_tags
     Environment = "production"

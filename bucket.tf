@@ -1,11 +1,17 @@
 resource "aws_s3_bucket" "source" {
   provider = aws.primary_region
   bucket   = var.source_bucket
+  tags = {
+    Name = var.s3_source_tags
+  }
 }
 
 resource "aws_s3_bucket" "destination" {
   provider = aws.secondary_region
   bucket   = var.destination_bucket
+  tags = {
+    Name = var.s3_destination_tags
+  }
 }
 
 resource "aws_s3_bucket_versioning" "destination" {
